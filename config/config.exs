@@ -33,7 +33,7 @@ import Config
 config :music_db, ecto_repos: [MusicDB.Repo]
 
 config :music_db, MusicDB.Repo,
-  username: "mpchase",
+  username: "postgres",
   password: "postgres",
   database: "music_db",
   hostname: "localhost",
