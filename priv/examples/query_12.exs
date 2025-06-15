@@ -53,6 +53,12 @@ defmodule ComposingQueriesExamples do
     from a in query, select: a.title
   end
 
+  def song_only(query) do
+    from a in query,
+      join: t in "tracks", on: t.album_id == a.id,
+      select: t.title
+  end
+
   def call_fourth do
   q =
     "albums"
