@@ -3,7 +3,7 @@ defmodule MusicDB.Repo.Migrations.AddCompositionArtistsTable do
   import Ecto.Query
   alias MusicDB.Repo
 
-  def change do
+  def up do
     create table("compositions_artists") do
       add :composition_id, references("compositions"), null: false
       add :artist_id, references("artists"), null: false
@@ -26,5 +26,23 @@ defmodule MusicDB.Repo.Migrations.AddCompositionArtistsTable do
     alter table("compositions") do
       remove :artist_id      
     end
+  end
+
+  def down do
+    alter table ("compositions") do
+      add :artist_id, references("artists")
+    end
+
+    flush()
+
+    from(ca in "compositions_artists", where: ca.role == "composer",
+        select: [:composition_id, :artist_id])
+    |> Repo.all()
+    |> Enum.each(fn row ->
+          Repo.update_all(from(c in "compositions", where: c.id == ^row.composition_id),
+              set: [artist_id: row.artist_id])
+    end)
+
+    drop table ("compositions_artists")
   end
 end
