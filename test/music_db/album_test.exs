@@ -20,6 +20,17 @@ defmodule MusicDB.AlbumTest do
     assert new_album.title == "Giant Steps"
   end
 
+  # Testing asynchronous mode with different procesess - doesn't crash
+  test "insert album async" do
+    task = Task.async(fn ->
+     album = MusicDB.Repo.insert!(%MusicDB.Album{title: "Giant Steps"})  
+     album.id
+    end)
+
+    album_id = Task.await(task)
+    assert MusicDB.Repo.get(MusicDB.Album, album_id).title == "Giant Steps" 
+  end
+
   test "valid changeset" do
     params = %{"title" => "Dark Side of the Moon"}
     changeset = Album.changeset(%Album{}, params)
