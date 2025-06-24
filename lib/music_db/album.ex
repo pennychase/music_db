@@ -13,6 +13,7 @@ defmodule MusicDB.Album do
 
   schema "albums" do
     field(:title, :string)
+    field(:last_viewed, MusicDB.DateTimeUnix)
     timestamps()
 
     belongs_to(:artist, Artist)
@@ -22,7 +23,7 @@ defmodule MusicDB.Album do
 
   def changeset(album, params) do
     album
-    |> cast(params, [:title])
+    |> cast(params, [:title, :last_viewed])
     |> validate_required([:title])
   end
 
